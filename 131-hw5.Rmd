@@ -43,5 +43,35 @@ pokemon
 After cleaning the names of the data set, I noticed that they were all converted to lower case and all the labels with a period after them change to an underscore. The function clean_names is useful for creating unique labels to reference later. It is also useful they are written similarly.                                                                                     
 2.
 ```{r}
+pokemon %>% 
+  ggplot(aes(y=type_1)) +
+  geom_bar()
+length(unique(pokemon$type_1))
+filter(pokemon, type_1=="Bug" | type_1=="Fire" | type_1=="Grass" | type_1=="Normal" | type_1=="Water" | type_1=="Psychic")
+pokemon %>% mutate(type_1 = factor(type_1),
+         legendary = factor(legendary))
+```
+There are 18 different classes of the outcome. They are all character classes. 
+3.
+```{r}
+set.seed(777)
+pokemon_split <- initial_split(pokemon, prop = 0.80, strata = 'type_1')
+pokemon_train <- training(pokemon_split)
+pokemon_test <- testing(pokemon_split)
+dim(pokemon_train)
+dim(pokemon_test)
+pokemon_folds <- vfold_cv(pokemon_train, v = 5, strata=type_1)
+```
+It is a good idea to stratify the folds on type_1 so that the class ratios are more balanced, we do not want to over or under sample.                                                           
+4. 
+```{r}
+pokemon_recipe <- recipe(type_1 ~ legendary + generation + sp_atk + attack + speed + defense + hp + sp_def, pokemon_train) %>% 
+  step_dummy(legendary) %>%
+  step_dummy(generation) %>%
+  step_normalize(all_predictors())
+```
+
+5.
+```{r}
 
 ```
