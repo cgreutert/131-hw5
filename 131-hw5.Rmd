@@ -1,0 +1,47 @@
+---
+title: "Homework Five: Elastic Net Tuning"
+author: "Carly Greutert"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, include=FALSE}
+library(tidymodels)
+library(ggplot2)
+library(discrim)
+library(corrr)
+library(klaR)
+library(caret)
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(corrplot)
+library(ggthemes)
+library(cli)
+library(recipes)
+library(pROC)
+library(yardstick)
+library(MASS)
+library(poissonreg)
+library(naivebayes)
+tidymodels_prefer()
+```
+
+```{r message=FALSE, include=FALSE}
+pokemon_old <- read_csv('C:\\Users\\carly\\AppData\\Local\\Temp\\Temp1_homework-5.zip\\homework-5\\data\\Pokemon.csv')
+```
+
+1. 
+```{r}
+library(janitor)
+pokemon <- clean_names(pokemon_old)
+pokemon
+```
+After cleaning the names of the data set, I noticed that they were all converted to lower case and all the labels with a period after them change to an underscore. The function clean_names is useful for creating unique labels to reference later. It is also useful they are written similarly.                                                                                     
+2.
+```{r}
+
+```
