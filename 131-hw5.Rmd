@@ -115,6 +115,10 @@ augment(ent_final_fit, new_data = pokemon_test) %>%
 augment(ent_final_fit, new_data = pokemon_test) %>%
 roc_curve(type_1, estimate = c(.pred_Bug, .pred_Fire, .pred_Water, .pred_Grass, .pred_Normal, .pred_Psychic)) %>%
 autoplot()
+
+augment(ent_final_fit, new_data = pokemon_test) %>%
+  conf_mat(truth = type_1, estimate = .pred_class) %>% 
+  autoplot(type = "heatmap")
 ```
 
 I notice that my model is not very good at precting the type of Pokemon. I also see that the model is best at predicting Normal, Psychic, and Fire types. It is very bad at predicting water, grass, and bug. I think this means that Pokemon's statistics does not determine its primary type. It may also mean that types such as water, grass, and bug do not have significant defining features in this data set and are more scattered. 
