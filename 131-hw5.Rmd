@@ -85,7 +85,7 @@ elastic_wf <- workflow() %>%
   add_recipe(pokemon_recipe) %>% 
   add_model(elasticnet)
 ```
-Across 5 folds, I will be fitting 5 models to the data.
+Across 5 folds, I will be fitting 5 folds * 10 penalties * 10 mixtures = 500 models to the data.
 
 6. 
 ```{r}
@@ -94,5 +94,27 @@ tune_ent <- tune_grid(
   resamples = pokemon_folds, 
   grid = elastic_grid
 )
-autoplot(tune_ent)
+#autoplot(tune_ent)
 ```
+
+I see that smaller penalty values produce a larger accuracy and ROC AUC.
+7.
+```{r}
+best_penalty <- select_best(tune_ent, metric = "roc_auc")
+best_penalty
+ent_final <- finalize_workflow(elastic_wf, best_penalty)
+ent_final_fit <- fit(ent_final, data = pokemon_train)
+augment(ent_final_fit, new_data = pokemon_test)%>%
+  yardstick::accuracy(truth = type_1, estimate = .pred_class)
+```
+8.
+```{r}
+augment(ent_final_fit, new_data = pokemon_test) %>%
+  roc_auc(type_1, estimate = c(.pred_Bug, .pred_Fire, .pred_Water, .pred_Grass, .pred_Normal, .pred_Psychic))
+
+augment(ent_final_fit, new_data = pokemon_test) %>%
+roc_curve(type_1, estimate = c(.pred_Bug, .pred_Fire, .pred_Water, .pred_Grass, .pred_Normal, .pred_Psychic)) %>%
+autoplot()
+```
+
+I notice that my model is not very good at precting the type of Pokemon. I also see that the model is best at predicting Normal, Psychic, and Fire types. It is very bad at predicting water, grass, and bug. I think this means that Pokemon's statistics does not determine its primary type. It may also mean that types such as water, grass, and bug do not have significant defining features in this data set and are more scattered. 
